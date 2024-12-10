@@ -15,6 +15,7 @@ import { CoreModule } from './core/core.module';
       envFilePath:
         process.env.NODE_ENV === 'production' ? '.env.production' : undefined,
     }),
+    // TODO change and hide prod credentials
     MongooseModule.forRoot(
       process.env.MONGODB_URI ||
         'mongodb://root:password@localhost:27017/ynov-ci?authSource=admin',
