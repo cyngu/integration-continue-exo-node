@@ -6,17 +6,23 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : undefined,
+      envFilePath:
+        process.env.NODE_ENV === 'production' ? '.env.production' : undefined,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://root:password@localhost:27017/ynov-ci?authSource=admin'),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI ||
+        'mongodb://root:password@localhost:27017/ynov-ci?authSource=admin',
+    ),
     UsersModule,
     RolesModule,
     AuthModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

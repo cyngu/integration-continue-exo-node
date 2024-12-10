@@ -14,14 +14,15 @@ export class AuthController {
     const token = await this.authService.generateJwt(payload);
 
     res.setHeader('Authorization', `Bearer ${token}`);
-
-    return res.send();
+    return res.json({
+      token,
+      user: payload
+    });
   }
 
   @Post('logout')
-  @HttpCode(HttpStatus.OK)
   async logout() {
-    return this.authService.logout();
+    return { message: 'Logged out successfully' };
   }
 
   @Post('signup')
@@ -31,7 +32,7 @@ export class AuthController {
     const token = await this.authService.generateJwt(payload);
 
     res.setHeader('Authorization', `Bearer ${token}`);
-    
+
     return res.send();
   }
 }
