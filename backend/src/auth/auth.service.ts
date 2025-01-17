@@ -1,7 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { User, UserDocument } from 'src/users/users.schema';
+import { User, UserDocument } from '../users/users.schema';
 
 @Injectable()
 export class AuthService {
@@ -37,14 +37,16 @@ export class AuthService {
   }
 
   async signup(user: Partial<User>): Promise<Partial<UserDocument>> {
-    const newUser = await this.usersService.create(user).then((user) => user.populate('role'));
-      return {
-        _id: newUser._id,
-        name: newUser.name,
-        firstname: newUser.firstname,
-        email: newUser.email,
-        role: newUser.role
-    }
+    const newUser = await this.usersService
+      .create(user)
+      .then((user) => user.populate('role'));
+    return {
+      _id: newUser._id,
+      name: newUser.name,
+      firstname: newUser.firstname,
+      email: newUser.email,
+      role: newUser.role,
+    };
   }
 
   async generateJwt(payload: any): Promise<string> {

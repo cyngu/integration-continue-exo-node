@@ -1,6 +1,13 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { User } from 'src/users/users.schema';
+import { User } from '../users/users.schema';
 import { Response } from 'express';
 
 @Controller('auth')
@@ -9,14 +16,17 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: { email: string; password: string }, @Res() res: Response) {
+  async login(
+    @Body() loginDto: { email: string; password: string },
+    @Res() res: Response,
+  ) {
     const payload = await this.authService.login(loginDto);
     const token = await this.authService.generateJwt(payload);
 
     res.setHeader('Authorization', `Bearer ${token}`);
     return res.json({
       token,
-      user: payload
+      user: payload,
     });
   }
 
