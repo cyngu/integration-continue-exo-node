@@ -2,29 +2,23 @@ name: Vercel Production Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
 jobs:
   build_test_and_deploy:
     permissions:
       contents: write
       pull-requests: write
-
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: ./backend
-
     strategy:
       matrix:
         node-version: [20.x]
-
     steps:
       - uses: actions/checkout@v4
 
@@ -33,19 +27,23 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: npm ci and test
+      - name: Install dependencies and test
         run: |
           npm install
           npm test
 
       - name: Install Vercel CLI
+        working-directory: .
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
+        working-directory: .
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: .
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} ./backend
 
       - name: Deploy Project Artifacts to Vercel
+        working-directory: .
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
