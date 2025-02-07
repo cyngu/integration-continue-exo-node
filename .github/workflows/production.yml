@@ -31,7 +31,7 @@ jobs:
 
       - name: npm ci and test
         run: |
-          npm ci
+          npm install
           npm test
 
       - name: Install Vercel CLI
