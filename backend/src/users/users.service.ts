@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,17 +9,14 @@ import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './users.schema';
 import { Role, RoleDocument } from '../roles/roles.schema';
 import * as bcrypt from 'bcryptjs';
-import {JwtService} from "@nestjs/jwt";
-
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
-      @InjectModel(User.name) private userModel: Model<UserDocument>,
-      @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
-      private jwtService: JwtService
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
+    private jwtService: JwtService,
   ) {}
 
   async findOneByEmail(email: string): Promise<UserDocument | null> {
@@ -39,7 +37,7 @@ export class UsersService {
     }
     if (!this.isValidPassword(user.password)) {
       throw new SyntaxError(
-          'Le mot de passe doit contenir au moins 6 caractères.',
+        'Le mot de passe doit contenir au moins 6 caractères.',
       );
     }
     if (!this.isValidEmail(user.email)) {
@@ -77,20 +75,24 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async remove(id:string, token:string): Promise<void> {
+  async remove(id: string, token: string): Promise<void> {
+    // const usertodelete = await this.findById(id);
+    const decodedToken = await this.jwtService.decode(token);
+    console.log(decodedToken);
+    if (decodedToken.role.name !== 'admin') {
+      throw new ForbiddenException(
+        'Vous devez être un administrateur pour supprimer cet utilisateur.',
+      );
+    }
 
-   // const usertodelete = await this.findById(id);
-    const decodedtoken = await this.jwtService.decode(token);
-    console.log(decodedtoken);
+    if (!decodedToken.role.permissions.includes('delete')) {
+      throw new ForbiddenException(
+        "Vous n'avez pas la permission de supprimer cet utilisateur.",
+      );
+    }
 
-   // const adminRole = await this.roleModel.findOne({ name: 'admin' });
-    // Vérifiez si l'utilisateur a le rôle 'admin' (en utilisant l'ObjectId)
-  // if (usertodelete.role !== adminRole) {
-  //    throw new ForbiddenException('Vous n\'avez pas les droits nécessaires pour supprimer cet utilisateur.');
-   // }
-   // await this.userModel.deleteOne({ _id: id });
+    await this.userModel.deleteOne({ _id: id });
   }
-
 
   // Méthodes de validation privées
   private isUnderage(birthDate: Date): boolean {
@@ -107,9 +109,11 @@ export class UsersService {
 
     return age < 18;
   }
+
   private isValidPassword(password: string): boolean {
     return password && password.length >= 6;
   }
+
   private isValidEmail(email: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
