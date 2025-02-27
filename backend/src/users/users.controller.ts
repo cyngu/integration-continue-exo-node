@@ -3,7 +3,6 @@ import {
   Controller,
   Post,
   Body,
-  Query,
   Get,
   UseGuards,
   Delete,
@@ -29,7 +28,7 @@ export class UsersController {
    * @returns {Promise<User>} - Returns the created user.
    */
   @Post()
-  async create(@Body() user: Partial<User>) {
+  async create(@Body() user: Partial<User>): Promise<User> {
     return this.usersService.create(user);
   }
 
@@ -51,7 +50,7 @@ export class UsersController {
    * @returns {Promise<User>} - Returns the user if found.
    */
   @UseGuards(JwtGuard)
-  @Get(':email') // Route to retrieve a user by email
+  @Get(':email')
   async findOneByEmail(@Param('email') email: string): Promise<User> {
     return this.usersService.findOneByEmail(email);
   }
@@ -59,18 +58,19 @@ export class UsersController {
   /**
    * Endpoint to delete a user by their ID.
    * This endpoint is protected by the JwtGuard.
-   * @param {Types.ObjectId} id - The ID of the user to delete.
+   * @param {string} id - The ID of the user to delete.
    * @param {string} authHeader - The authorization header containing the JWT.
    * @returns {Promise<void>} - Returns nothing on successful deletion.
    */
   @UseGuards(JwtGuard)
   @Delete(':id')
   async remove(
-    @Param('id') id: Types.ObjectId,
+    @Param('id') id: string,
     @Headers('authorization') authHeader: string,
   ): Promise<void> {
     const token = authHeader.split(' ')[1]; // Retrieve the Bearer token
-    // You can now use the token as necessary
-    return this.usersService.remove(id, token);
+    // Convert the string ID to an ObjectId
+    const objectId = new Types.ObjectId(id);
+    return this.usersService.remove(objectId, token);
   }
 }

@@ -130,11 +130,10 @@ export class UsersService {
    * @returns {boolean} - Returns true if the password is valid (at least 6 characters), otherwise false.
    */
   public isValidPassword(password: string): boolean {
-    // Checks if the password is empty or if its length is less than 6
     if (!password || password.length < 6) {
       return false;
     }
-    return true; // Returns true if the password is valid
+    return true;
   }
 
   /**
@@ -153,7 +152,7 @@ export class UsersService {
    * @returns {boolean} - Returns true if the name is valid, otherwise false.
    */
   public isValidName(name: string): boolean {
-    const namePattern = /^[A-Za-zÀ-ÿ'-]+(?:\s[A-Za-zÀ-ÿ'-]+)*$/; // Allow letters, spaces, apostrophes, dashes
+    const namePattern = /^[A-Za-zÀ-ÿ'-]+(?:\s[A-Za-zÀ-ÿ'-]+)*$/;
     return namePattern.test(name);
   }
 
@@ -184,6 +183,6 @@ export class UsersService {
       age--;
     }
 
-    return age < 18; // Returns true if the user is underage
+    return age < 18;
   }
 }

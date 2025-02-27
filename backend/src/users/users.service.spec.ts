@@ -18,19 +18,18 @@ import mongoose, { Model } from 'mongoose';
  * ensuring that the service behaves as expected under various conditions.
  */
 describe('UsersService', () => {
-  let service: UsersService; // Instance of UsersService to be tested
-  let userModel: any; // Mocked user model
-  let mockJwtService: any; // Mocked JWT service
+  let service: UsersService;
+  let userModel: any;
+  let mockJwtService: any;
 
-  // Mock user data for testing
   const mockRole = {
     _id: new mongoose.Types.ObjectId(),
     name: 'employee',
     permissions: [],
-  }; // Mock role
+  };
 
   const mockUser = {
-    _id: new mongoose.Types.ObjectId(), // Generates a unique ID
+    _id: new mongoose.Types.ObjectId(),
     email: 'test@example.com',
     password: 'password123',
     name: 'John',
@@ -38,11 +37,11 @@ describe('UsersService', () => {
     birthDate: new Date('2000-01-01'),
     city: 'Paris',
     zipcode: '75001',
-    role: mockRole._id, // Include role in the mock user
+    role: mockRole._id,
   };
 
-  const adminToken = 'valid.admin.token'; // Simulated admin token
-  const employeeToken = 'valid.employee.token'; // Simulated employee token
+  const adminToken = 'valid.admin.token';
+  const employeeToken = 'valid.employee.token';
 
   /**
    * Setup before each test.
@@ -53,7 +52,7 @@ describe('UsersService', () => {
     userModel = {
       findOne: jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn(), // Simulate the exec method
+          exec: jest.fn(),
         }),
       }),
       create: jest.fn().mockResolvedValue(mockUser),
@@ -61,7 +60,6 @@ describe('UsersService', () => {
       find: jest.fn(),
     };
 
-    // Mock JWT service methods
     mockJwtService = {
       decode: jest.fn(),
     };
@@ -87,7 +85,6 @@ describe('UsersService', () => {
       ],
     }).compile();
 
-    // Retrieve the UsersService instance
     service = module.get<UsersService>(UsersService);
     userModel = module.get<jest.Mocked<Model<UserDocument>>>(
       getModelToken(User.name),
@@ -100,7 +97,7 @@ describe('UsersService', () => {
    * This function clears all mocks to avoid interference between tests.
    */
   afterEach(() => {
-    jest.clearAllMocks(); // Clear all mocks
+    jest.clearAllMocks();
   });
 
   /**
@@ -118,7 +115,7 @@ describe('UsersService', () => {
     it('should throw ConflictException if email already exists', async () => {
       userModel.findOne.mockReturnValueOnce({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(mockUser), // Simulate an existing user
+          exec: jest.fn().mockResolvedValue(mockUser),
         }),
       } as any);
       await expect(service.create(mockUser)).rejects.toThrow(ConflictException);
@@ -146,11 +143,11 @@ describe('UsersService', () => {
       // Mock findOne to return null (user doesn't exist)
       userModel.findOne.mockReturnValueOnce({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(null), // Simulate no existing user
+          exec: jest.fn().mockResolvedValue(null),
         }),
       } as any);
       // Simulate the creation of a user
-      userModel.create.mockResolvedValueOnce(mockUser); // Simulate the create method
+      userModel.create.mockResolvedValueOnce(mockUser);
 
       // Call the create method of the service
       const result = await service.create(mockUser);
@@ -174,7 +171,7 @@ describe('UsersService', () => {
     it('should return a user if found', async () => {
       userModel.findOne.mockReturnValueOnce({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(mockUser), // Simulate an existing user
+          exec: jest.fn().mockResolvedValue(mockUser),
         }),
       } as any);
       const user = await service.findOneByEmail(mockUser.email);
@@ -187,7 +184,7 @@ describe('UsersService', () => {
     it('should return null if user not found', async () => {
       userModel.findOne.mockReturnValueOnce({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(null), // Simulate no existing user
+          exec: jest.fn().mockResolvedValue(null),
         }),
       } as any);
       const user = await service.findOneByEmail('notfound@example.com');
@@ -239,7 +236,7 @@ describe('UsersService', () => {
         birthDate: new Date('2000-01-01'),
         city: 'Paris',
         zipcode: '75001',
-        role: mockRole._id, // Include role in the user object
+        role: mockRole._id,
       };
 
       const isValid = await service.validatePassword(user, 'password123');
@@ -258,7 +255,7 @@ describe('UsersService', () => {
         birthDate: new Date('2000-01-01'),
         city: 'Paris',
         zipcode: '75001',
-        role: mockRole._id, // Include role in the user object
+        role: mockRole._id,
       };
 
       const isValid = await service.validatePassword(user, 'wrongpassword');

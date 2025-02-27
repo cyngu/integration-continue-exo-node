@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service'; // Import UsersService
-import { JwtService } from '@nestjs/jwt'; // Import JwtService
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 /**
  * Unit tests for the AuthService.
@@ -9,25 +9,24 @@ import { JwtService } from '@nestjs/jwt'; // Import JwtService
  * ensuring that the service behaves as expected under various conditions.
  */
 describe('AuthService', () => {
-  let service: AuthService; // Instance of AuthService to be tested
-  let mockUsersService: any; // Mocked UsersService
-  let mockJwtService: any; // Mocked JwtService
+  let service: AuthService;
+  let mockUsersService: any;
+  let mockJwtService: any;
 
   /**
    * Setup before each test.
    * This function initializes the testing module and mocks necessary services.
    */
   beforeEach(async () => {
-    // Mock UsersService methods
     mockUsersService = {
-      findOneByEmail: jest.fn(), // Mock method to find a user by email
-      validatePassword: jest.fn(), // Mock method to validate user password
-      create: jest.fn(), // Mock method to create a user
+      findOneByEmail: jest.fn(),
+      validatePassword: jest.fn(),
+      create: jest.fn(),
     };
 
-    // Mock JwtService methods
+
     mockJwtService = {
-      sign: jest.fn(), // Mock method to sign a JWT
+      sign: jest.fn(),
     };
 
     // Create a testing module with mocked providers
@@ -36,16 +35,15 @@ describe('AuthService', () => {
         AuthService,
         {
           provide: UsersService,
-          useValue: mockUsersService, // Use the mocked UsersService
+          useValue: mockUsersService,
         },
         {
           provide: JwtService,
-          useValue: mockJwtService, // Use the mocked JwtService
+          useValue: mockJwtService,
         },
       ],
     }).compile();
 
-    // Retrieve the AuthService instance
     service = module.get<AuthService>(AuthService);
   });
 
@@ -53,6 +51,6 @@ describe('AuthService', () => {
    * Test to ensure the service is defined.
    */
   it('should be defined', () => {
-    expect(service).toBeDefined(); // Check that the service is defined
+    expect(service).toBeDefined();
   });
 });
