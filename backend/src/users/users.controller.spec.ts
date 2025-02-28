@@ -1,28 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
-import { UsersService } from './users.service'; // Import the UsersService for user-related operations
-import { JwtService } from '@nestjs/jwt'; // Import JwtService for handling JWT operations
+import { UsersService } from './users.service';
+import { JwtService } from '@nestjs/jwt';
 
 // Describe the test suite for UsersController
 describe('UsersController', () => {
-  let controller: UsersController; // Declare a variable to hold the instance of UsersController
-  let mockUsersService: any; // Declare a variable for the mocked UsersService
-  let mockJwtService: any; // Declare a variable for the mocked JwtService
+  let controller: UsersController;
+  let mockUsersService: any;
+  let mockJwtService: any;
 
   // Set up the testing environment before each test
   beforeEach(async () => {
-    // Create a mock implementation of UsersService
     mockUsersService = {
-      create: jest.fn(), // Mock the create method
-      findAll: jest.fn(), // Mock the findAll method
-      findOneByEmail: jest.fn(), // Mock the findOneByEmail method
-      remove: jest.fn(), // Mock the remove method
+      create: jest.fn(),
+      findAll: jest.fn(),
+      findOneByEmail: jest.fn(),
+      remove: jest.fn(),
     };
 
-    // Create a mock implementation of JwtService
     mockJwtService = {
-      // Add methods to mock for JwtService as needed
-      verify: jest.fn(), // Mock the verify method
+      verify: jest.fn(),
     };
 
     // Create a testing module with the UsersController and mocked services
@@ -30,11 +27,11 @@ describe('UsersController', () => {
       controllers: [UsersController], // Register the UsersController
       providers: [
         {
-          provide: UsersService, // Provide the mocked UsersService
+          provide: UsersService,
           useValue: mockUsersService,
         },
         {
-          provide: JwtService, // Provide the mocked JwtService
+          provide: JwtService,
           useValue: mockJwtService,
         },
       ],

@@ -1,0 +1,281 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  description: "The User Management API provides endpoints for user authentication (login, logout, signup) and user management (creating, retrieving, and deleting user accounts)."
+  version: 1.0.0
+tags:
+  - name: Authentication
+    description: Operations related to user authentication
+  - name: User Management
+    description: Operations related to user management
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login a user
+      description: |
+        Authenticates a user by verifying their email and password. 
+        On successful authentication, a JWT token is returned for session management.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "Bearer your_jwt_token"
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: user@example.com
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid email or password."
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout a user
+      description: |
+        Logs out the authenticated user by invalidating the session token.
+      responses:
+        '200':
+          description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized - No active session
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No active session found."
+
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Signup a new user
+      description: |
+        Registers a new user by collecting their email and password. 
+        On successful registration, a JWT token is returned for immediate authentication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '201':
+          description: Successful signup
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "Bearer your_jwt_token"
+        '409':
+          description: Conflict - Resource already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email already exists."
+
+  /users:
+    post:
+      tags:
+        - User Management
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: user@example.com
+        '400':
+          description: Bad Request - Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid email format."
+
+    get:
+      tags:
+        - User Management
+      summary: Retrieve all users
+      description: |
+        Retrieves a list of all users in the system. 
+        This operation requires the user to be authenticated.
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: user@example.com
+        '404':
+          description: Not Found - No users found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No users found."
+
+  /users/{email}:
+    get:
+      tags:
+        - User Management
+      summary: Retrieve a user by email
+      description: |
+        Retrieves the details of a specific user identified by their email address. 
+        This operation requires the user to be authenticated.
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: The email of the user to retrieve
+          schema:
+            type: string
+            example: user@example.com
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: user@example.com
+        '404':
+          description: Not Found - User does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+
+  /users/{id}:
+    delete:
+      tags:
+        - User Management
+      summary: Delete a user by ID
+      description: |
+        Permanently deletes a user account from the system using their unique identifier. 
+        This operation is typically restricted to admin users.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the user to delete
+          schema:
+            type: string
+            example: "60d5ec49f1b2c8b1f8e4e4e4"
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: Not Found - User does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+        '403':
+          description: Forbidden - Access denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Access denied. You must be admin to delete this user."
