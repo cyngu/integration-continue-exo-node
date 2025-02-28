@@ -23,13 +23,7 @@ async function bootstrap() {
   );
 
   // Configure Swagger UI
-  const CSS_URL =
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
-  app.use(
-    '/api-docs',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, { customCssUrl: CSS_URL }),
-  );
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   await app.listen(process.env.PORT ?? 3000);
 }
 
