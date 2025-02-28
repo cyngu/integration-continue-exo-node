@@ -44,6 +44,7 @@ describe('AuthService', () => {
       ],
     }).compile();
 
+    // Retrieve the AuthService instance
     service = module.get<AuthService>(AuthService);
   });
 
@@ -51,6 +52,6 @@ describe('AuthService', () => {
    * Test to ensure the service is defined.
    */
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(service).toBeDefined(); // Check that the service is defined
   });
 });

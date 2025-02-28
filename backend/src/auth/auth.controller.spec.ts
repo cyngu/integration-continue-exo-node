@@ -33,6 +33,7 @@ describe('AuthController', () => {
       ],
     }).compile();
 
+    // Retrieve the AuthController instance
     controller = module.get<AuthController>(AuthController);
   });
 
@@ -40,6 +41,6 @@ describe('AuthController', () => {
    * Test to ensure the controller is defined.
    */
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller).toBeDefined(); // Check that the controller is defined
   });
 });

@@ -24,7 +24,7 @@ describe('UsersController', () => {
 
     // Create a testing module with the UsersController and mocked services
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
+      controllers: [UsersController], // Register the UsersController
       providers: [
         {
           provide: UsersService,
@@ -35,13 +35,14 @@ describe('UsersController', () => {
           useValue: mockJwtService,
         },
       ],
-    }).compile();
+    }).compile(); // Compile the testing module
 
+    // Retrieve the instance of UsersController from the testing module
     controller = module.get<UsersController>(UsersController);
   });
 
   // Test to ensure the controller is defined
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller).toBeDefined(); // Expect the controller to be defined
   });
 });

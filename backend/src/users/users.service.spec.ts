@@ -85,6 +85,7 @@ describe('UsersService', () => {
       ],
     }).compile();
 
+    // Retrieve the UsersService instance
     service = module.get<UsersService>(UsersService);
     userModel = module.get<jest.Mocked<Model<UserDocument>>>(
       getModelToken(User.name),
