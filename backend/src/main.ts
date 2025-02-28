@@ -23,7 +23,18 @@ async function bootstrap() {
   );
 
   // Configure Swagger UI
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, {
+      customJs: [
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-standalone-preset.min.js',
+      ],
+      customCssUrl:
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css',
+    }),
+  );
   await app.listen(process.env.PORT ?? 3000);
 }
 
