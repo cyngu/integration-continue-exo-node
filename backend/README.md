@@ -1,25 +1,26 @@
 ## Description
 
-Backend in NestJS with mongoDB, it needs to start db from the docker-compose.yml.
+Backend in NestJS with mongoDB
 
 ## Project setup
-
+The backend needs a local mongoDB to interact with. Run the following comment to run one with docker :
 ```bash
-$ npm install
+docker compose up mongodb -d
+```
+
+Install necessary packages
+```bash
+npm i
 ```
 
 ## Compile and run the project
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
+
+**⚠️ Warning:** With `Windows` environment, in `package.json` remove `NODE_ENV=development` for the command `"start:dev"`.
+Run `NODE_ENV=development` then execute `npm run start:dev`
 
 ## Run tests
 
