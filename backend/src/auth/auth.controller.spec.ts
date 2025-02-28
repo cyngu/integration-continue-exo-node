@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service'; // Ensure to import AuthService
+import { AuthService } from './auth.service';
 
 /**
  * Unit tests for the AuthController.
@@ -8,19 +8,18 @@ import { AuthService } from './auth.service'; // Ensure to import AuthService
  * ensuring that the controller behaves as expected under various conditions.
  */
 describe('AuthController', () => {
-  let controller: AuthController; // Instance of AuthController to be tested
-  let mockAuthService: any; // Mocked AuthService
+  let controller: AuthController;
+  let mockAuthService: any;
 
   /**
    * Setup before each test.
    * This function initializes the testing module and mocks necessary services.
    */
   beforeEach(async () => {
-    // Mock AuthService methods
     mockAuthService = {
-      login: jest.fn(), // Mock login method
-      generateJwt: jest.fn(), // Mock JWT generation method
-      signup: jest.fn(), // Mock signup method
+      login: jest.fn(),
+      generateJwt: jest.fn(),
+      signup: jest.fn(),
     };
 
     // Create a testing module with mocked providers
@@ -29,7 +28,7 @@ describe('AuthController', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: mockAuthService, // Use the mocked AuthService
+          useValue: mockAuthService,
         },
       ],
     }).compile();
