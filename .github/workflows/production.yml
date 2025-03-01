@@ -28,10 +28,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies and test
+      - name: Install dependencies
         run: |
           npm install
-          npm test
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+        env:
+          JWT_SECRET: ${{ 'oSYi2StE3vmYUQky' }}
+          NODE_ENV: test
 
       - name: Install Vercel CLI
         working-directory: .
