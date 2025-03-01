@@ -55,16 +55,25 @@ export class AuthService {
    * @returns A promise that resolves to a partial UserDocument containing the new user's information.
    */
   async signup(user: Partial<User>): Promise<Partial<UserDocument>> {
-    const newUser = await this.usersService
-      .create(user)
-      .then((user) => user.populate('role'));
-    return {
-      _id: newUser._id,
-      name: newUser.name,
-      firstname: newUser.firstname,
-      email: newUser.email,
-      role: newUser.role,
-    };
+    try {
+      const newUser = await this.usersService
+        .create(user)
+        .then((user) => user.populate('role'));
+      return {
+        _id: newUser._id,
+        name: newUser.name,
+        firstname: newUser.firstname,
+        email: newUser.email,
+        role: newUser.role,
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        const error = new Error('Cette adresse email est déjà prise');
+        error['status'] = 409;
+        throw error;
+      }
+      throw error;
+    }
   }
 
   /**

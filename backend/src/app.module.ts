@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
+import { JwtModule } from '@nestjs/jwt';
+
 
 @Module({
   imports: [
@@ -14,6 +16,10 @@ import { CoreModule } from './core/core.module';
       isGlobal: true,
       envFilePath:
         process.env.NODE_ENV === 'production' ? '.env.production' : undefined,
+    }),
+    JwtModule.register({
+      secret: 'oSYi2StE3vmYUQky',
+      signOptions: { expiresIn: '1h' },
     }),
     // TODO change and hide prod credentials
     MongooseModule.forRoot(
